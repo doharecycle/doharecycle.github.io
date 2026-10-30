@@ -254,20 +254,12 @@
         attribution: '&copy; MapTiler &copy; OpenStreetMap'
     }).addTo(map);
 
-    const AIRTABLE_BASE_ID = 'appvEcRKGoTkJLKrE';
-    const AIRTABLE_TOKEN = AIRTABLE_TOKEN_ENV;
-    const TABLE_NAME = 'Bins';
-
-    let allBins = [];
-    const binList = document.getElementById('bin-list');
-    const searchBox = document.getElementById('search-box');
-
     async function fetchBins() {
-        const url = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${encodeURIComponent(TABLE_NAME)}`;
-        const response = await fetch(url, { headers: { 'Authorization': `Bearer ${AIRTABLE_TOKEN}` } });
-        const data = await response.json();
+        try {
+            const response = await fetch('./bins.json');
+            const data = await response.json();
 
-        allBins = data.records.map(r => {
+            allBins = data.records.map(r => {
             const fields = r.fields;
             const photoData = fields['Photo'];
             let photoHtml = '';
