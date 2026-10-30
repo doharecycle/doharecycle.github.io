@@ -254,52 +254,18 @@
         attribution: '&copy; MapTiler &copy; OpenStreetMap'
     }).addTo(map);
 
+    const AIRTABLE_BASE_ID = 'appvEcRKGoTkJLKrE';
+    const AIRTABLE_TOKEN = 'patKUQIk2cNPuVmrs.c0d9270527a826ca362a2b975d88dd1c2cb1cdf65413fe713d310585f21ab4e8';
+    const TABLE_NAME = 'Bins';
+
     let allBins = [];
     const binList = document.getElementById('bin-list');
     const searchBox = document.getElementById('search-box');
 
-    const FALLBACK_DATA = {
-        "records": [
-            {
-                "id": "recN0w0Gt7CIWTxxt",
-                "fields": {
-                    "Name": "Zaitouna street",
-                    "Type": "General",
-                    "Latitude": 25.2498193,
-                    "Longitude": 51.5599651
-                }
-            },
-            {
-                "id": "reckb5X0zHkd0wANg",
-                "fields": {
-                    "Name": "Mushairab Metro Station",
-                    "Type": "All recyclables",
-                    "Latitude": 25.282919258241037,
-                    "Longitude": 51.525715710660464
-                }
-            },
-            {
-                "id": "recpv4IW27ASsmYp6",
-                "fields": {
-                    "Name": "National Museum Metro Station",
-                    "Type": "All recyclables",
-                    "Latitude": 25.284802038373556,
-                    "Longitude": 51.54915849675291
-                }
-            }
-        ]
-    };
-
     async function fetchBins() {
-        let data;
-        try {
-            const response = await fetch('./bins.json');
-            if (!response.ok) throw new Error('Failed to fetch bins.json');
-            data = await response.json();
-        } catch (error) {
-            console.warn('Using fallback bin data due to fetch error:', error);
-            data = FALLBACK_DATA;
-        }
+        const url = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${encodeURIComponent(TABLE_NAME)}`;
+        const response = await fetch(url, { headers: { 'Authorization': `Bearer ${AIRTABLE_TOKEN}` } });
+        const data = await response.json();
 
         allBins = data.records.map(r => {
             const fields = r.fields;
